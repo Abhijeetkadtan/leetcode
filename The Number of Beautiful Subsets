@@ -1,0 +1,29 @@
+class Solution {
+    public int beautifulSubsets(int[] nums, int k) {
+    int n=nums.length;
+    int total=0;
+    for(int i=1;i<(1<<n);i++){
+        boolean isBeauty=true;
+        for(int j=0;j<n;j++){
+            if((i & (1<<j))!=0){
+               for(int m=j+1;m<n;m++){
+                if((i & (1<<m))!=0){
+                    if(Math.abs(nums[j]-nums[m])==k){
+                        isBeauty=false;
+                        break;
+                    }
+                }
+            }
+               if(!isBeauty){
+                break;
+               }
+            }
+        }
+        if(isBeauty){
+            total++;
+        }
+
+    }
+    return total;
+    }
+}
