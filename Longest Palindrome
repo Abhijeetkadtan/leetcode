@@ -1,0 +1,23 @@
+class Solution {
+    public int longestPalindrome(final String s) {
+        final char[] dictionary = new char[58];
+        int sum = 0;
+        boolean odd = false;
+
+        for(int i = 0; i < s.length(); ++i)
+            dictionary[s.charAt(i) - 'A']++;
+
+        for(int i = 0; i < 58; ++i) {
+            int value = dictionary[i];
+
+            if(value % 2 == 0) {
+                sum += value;
+            } else {
+                sum += value - 1;
+                odd = true;
+            }
+        }
+
+        return sum + (odd ? 1 : 0);
+    }
+}
