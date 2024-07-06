@@ -1,0 +1,13 @@
+class Solution {
+    public int passThePillow(int n, int time) {
+        int stepsRem = time % (n-1);
+        int direction = time / (n-1);
+        int person;
+        if(direction % 2 == 0) { // This check is to find direction of pillow
+            person = 1 + stepsRem; // even, means it is in straight direction
+        } else {
+            person = n - stepsRem; // odd, means it is in reverse direction
+        }
+        return person;
+    }
+}
