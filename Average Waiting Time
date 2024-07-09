@@ -1,0 +1,19 @@
+class Solution {
+    public double averageWaitingTime(int[][] arr) {
+        int n = arr.length;
+
+        long st = arr[0][0];
+        long time = 0;
+        for(int i=0; i<n; i++){
+            if(st<arr[i][0]){
+                time+=(long)arr[i][1];
+                st = (long)(arr[i][0]+arr[i][1]);
+            }else{
+                st = st+(long)arr[i][1];
+                time += st-(long)arr[i][0];
+            }
+            
+        }
+        return (double)time/n;
+    }
+}
