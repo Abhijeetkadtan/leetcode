@@ -1,0 +1,21 @@
+class Solution {
+    public int minOperations(String[] logs) {
+        int n = logs.length;
+        int op=0;
+        for(int i=0;i<n;i++){
+            if(logs[i].equals("../")){
+                op--;
+                if(op<0){
+                    op=0;
+                }
+            }
+            else if(logs[i].equals("./")){
+                continue;
+            }
+            else{
+                op++;
+            }
+        }
+        return op;
+    }
+}
