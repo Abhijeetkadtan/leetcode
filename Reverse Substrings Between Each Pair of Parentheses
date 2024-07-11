@@ -1,0 +1,21 @@
+class Solution {
+    char[] str;
+    int i, n; 
+    public String reverseParentheses(String s) {
+        str = s.toCharArray();
+        i = 0;
+        n = str.length;
+        return helper();
+    }
+    
+    String helper() {
+        StringBuilder sb = new StringBuilder();
+        while(i<n) {
+            char c = str[i++];
+            if(c=='(') sb.append(helper());
+            else if(c==')') return sb.reverse().toString();
+            else sb.append(c);
+        }
+        return sb.toString();
+    }
+}
