@@ -1,0 +1,68 @@
+class Solution {
+    public List<Integer> survivedRobotsHealths(int[] positions, int[] healths, String directions) {
+        int n = positions.length;
+        Robot[] robots = new Robot[n];
+        
+        // Combine all information into a single list of Robot objects
+        for (int i = 0; i < n; i++) {
+            robots[i] = new Robot(positions[i], healths[i], directions.charAt(i), i);
+        }
+        
+        // Sort the robots based on their positions
+        Arrays.sort(robots, Comparator.comparingInt(r -> r.position));
+        
+        Stack<Robot> stack = new Stack<>();
+        
+        for (Robot robot : robots) {
+            if (robot.direction == 'R') {
+                stack.push(robot);
+            } else {
+                // robot.direction == 'L'
+                while (!stack.isEmpty() && stack.peek().direction == 'R') {
+                    Robot rightRobot = stack.pop();
+                    if (rightRobot.health == robot.health) {
+                        // Both robots have the same health, both are destroyed
+                        robot = null;
+                        break;
+                    } else if (rightRobot.health > robot.health) {
+                        // The right-moving robot survives
+                        rightRobot.health--;
+                        stack.push(rightRobot);
+                        robot = null;
+                        break;
+                    } else {
+                        // The left-moving robot survives
+                        robot.health--;
+                    }
+                }
+                if (robot != null) {
+                    stack.push(robot);
+                }
+            }
+        }
+        
+        // Collect the remaining robots in their original order
+        List<Integer> result = new ArrayList<>(Collections.nCopies(n, -1));  // Use -1 as a placeholder for destroyed robots
+        for (Robot robot : stack) {
+            result.set(robot.index, robot.health);
+        }
+        
+        // Filter out destroyed robots (those with -1 health in the result list)
+        result.removeIf(h -> h == -1);
+        
+        return result;
+    }
+    static class Robot {
+        int position;
+        int health;
+        char direction;
+        int index;
+        
+        Robot(int position, int health, char direction, int index) {
+            this.position = position;
+            this.health = health;
+            this.direction = direction;
+            this.index = index;
+        }
+    }
+}
