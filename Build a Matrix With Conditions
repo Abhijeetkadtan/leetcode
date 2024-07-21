@@ -1,0 +1,51 @@
+class Solution {
+    public int[][] buildMatrix(int k, int[][] rowConditions, int[][] colConditions) {
+        int rowTopo[] = topoSort(k,rowConditions);
+        int colTopo[] = topoSort(k,colConditions);
+        int ans[][] = new int[k][k];
+        if(rowTopo.length==0||colTopo.length==0)
+            return new int[0][0];
+        for(int i=1;i<=k;i++){
+            for(int j=1;j<=k;j++){
+                if(rowTopo[i]==colTopo[j]){
+                    ans[i-1][j-1] = rowTopo[i];
+                }
+            }
+        }
+        return ans;
+    }
+    public int[] topoSort(int V, int[][]node){
+        
+        ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
+        int []rank = new int[V+1];
+        int ans[] = new int[V+1];
+        for(int i=0;i<=V;i++){
+            adj.add(new ArrayList<>());
+        }
+        for(int n[] : node){
+            adj.get(n[0]).add(n[1]);
+             rank[n[1]]++;
+        }
+        
+        Queue<Integer> q = new LinkedList<>();
+        for(int i=0;i<rank.length;i++){
+            if(rank[i]==0){
+              q.add(i);
+            }
+        }
+        int len = 0;
+        while(!q.isEmpty()){
+            int temp = q.poll();
+            ans[len++] = temp;
+            for(int next : adj.get(temp)){
+                rank[next]--;
+                if(rank[next]==0){
+                    q.add(next);
+                }
+            }
+            
+        }
+        if(len!=V+1)
+            return new int[0];
+        return ans;
+    }
