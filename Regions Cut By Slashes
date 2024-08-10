@@ -1,0 +1,48 @@
+class Solution {
+    private static int[] row={1,-1,0,0};
+    private static int[] col={0,0,1,-1};
+    public int regionsBySlashes(String[] grid) {
+        int n=grid.length;
+        int [][]box=new int [n*3][n*3];
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                char ch=grid[i].charAt(j);
+                if(ch=='/'){
+                    box[i*3][j*3+2]=-1;
+                    box[i*3+1][j*3+1]=-1;
+                    box[i*3+2][j*3]=-1;
+
+                }
+                if(ch=='\\'){
+                    box[i*3][j*3]=-1;
+                    box[i*3+1][j*3+1]=-1;
+                    box[i*3+2][j*3+2]=-1;
+                }
+            }
+        }
+        int cnt=0;
+        for(int i=0;i<(n*3);i++){
+            for(int j=0;j<(n*3);j++){
+                if(box[i][j]!=-1){
+                    dfs(box,i,j);
+                    cnt++;
+                }
+            }
+        }
+        return cnt;
+
+    }
+
+    private void dfs(int [][]box,int r,int c){
+        box[r][c]=-1;
+
+        for(int i=0;i<4;i++){
+            int tr=r+row[i];
+            int tc=c+col[i];
+            if(tr>=0 && tc>=0 && tr<box.length && tc<box[r].length && box[tr][tc]!=-1){
+                dfs(box,tr,tc);
+            }
+        }
+
+    }
+}
