@@ -1,0 +1,53 @@
+import java.util.*;
+
+class Pair {
+    int node;
+    double dis;
+
+    public Pair(int node, double dis) {
+        this.node = node;
+        this.dis = dis;
+    }
+}
+
+class Solution {
+
+    public double maxProbability(int n, int[][] edges, double[] succProb, int start_node, int end_node) {
+        // Create an adjacency list for the graph
+        Map<Integer, List<Pair>> graph = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            graph.put(i, new ArrayList<>());
+        }
+        for (int i = 0; i < edges.length; i++) {
+            graph.get(edges[i][0]).add(new Pair(edges[i][1], succProb[i]));
+            graph.get(edges[i][1]).add(new Pair(edges[i][0], succProb[i]));
+        }
+
+        // Priority Queue to pick the node with the highest probability next
+        PriorityQueue<Pair> q = new PriorityQueue<>((a, b) -> Double.compare(b.dis, a.dis));
+        double[] probabilities = new double[n];
+        probabilities[start_node] = 1.0;
+        q.add(new Pair(start_node, 1.0));
+
+        while (!q.isEmpty()) {
+            Pair pair = q.poll();
+            int curr = pair.node;
+            double currProb = pair.dis;
+
+            if (curr == end_node) {
+                return currProb;
+            }
+
+            for (Pair neighbor : graph.get(curr)) {
+                int nextNode = neighbor.node;
+                double edgeProb = neighbor.dis;
+                if (probabilities[nextNode] < currProb * edgeProb) {
+                    probabilities[nextNode] = currProb * edgeProb;
+                    q.add(new Pair(nextNode, probabilities[nextNode]));
+                }
+            }
+        }
+
+        return 0.0;
+    }
+}
