@@ -1,0 +1,33 @@
+class Solution {
+    public boolean dfs(int grid1[][], int grid2[][], int i, int j, boolean vis[][]) {
+        if (i < 0 || i >= grid1.length || j < 0 || j >= grid1[0].length || grid2[i][j] == 0 || vis[i][j]) {
+            return true;
+        }
+        vis[i][j] = true;
+        boolean isIsland = true;
+        if (grid1[i][j] == 0) {
+            isIsland = false;
+        }
+        isIsland &= dfs(grid1, grid2, i+1, j, vis);
+        isIsland &= dfs(grid1, grid2, i-1, j, vis);
+        isIsland &= dfs(grid1, grid2, i, j+1, vis);
+        isIsland &= dfs(grid1, grid2, i, j-1, vis);
+
+        return isIsland;
+    }
+    public int countSubIslands(int[][] grid1, int[][] grid2) {
+        int n = grid2.length, m = grid2[0].length;
+        int res = 0;
+        boolean vis[][] = new boolean[n][m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid2[i][j] == 1 && !vis[i][j]) {
+                    if (dfs(grid1, grid2, i, j, vis)) {
+                        res++;
+                    }
+                }
+            }
+        }
+        return res;
+    }
+}
