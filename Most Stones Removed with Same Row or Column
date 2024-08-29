@@ -1,0 +1,30 @@
+class Solution {
+    public int removeStones(int[][] stones) {
+        int n = stones.length;
+        boolean[] visited = new boolean[n];
+        int count = 0;
+
+        for(int i = 0; i < n; i++)
+        {
+            if(visited[i]) continue;
+            dfs(stones,i,visited);
+            count += 1;
+        }
+
+        return n-count;
+    }
+
+    public void dfs(int[][] stones, int curIdx, boolean[] visited)
+    {
+        visited[curIdx] = true;
+
+        for(int i = 0; i < stones.length; i++)
+        {
+            if(visited[i] || curIdx == i) continue;
+            if(stones[i][0] == stones[curIdx][0] || stones[i][1] == stones[curIdx][1])
+            {
+                dfs(stones,i,visited);
+            }
+        }
+    }
+}
