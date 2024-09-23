@@ -1,0 +1,25 @@
+class Solution {
+    public int solve(String s, HashSet<String> hs, int i, int n, int dp[]) {
+        if (i >= n) return 0;
+        if (dp[i] != -1) return dp[i];
+
+        int result = 1 + solve(s, hs, i+1, n, dp);
+
+        for (int j = i+1; j <= n; j++) {
+            String curr = s.substring(i, j);
+            if (hs.contains(curr)) {
+                result = Math.min(solve(s, hs, j, n, dp), result);
+            }
+        }
+        return dp[i] = result;
+    }
+    public int minExtraChar(String s, String[] dictionary) {
+        int dp[] = new int[s.length()+1];
+        Arrays.fill(dp, -1);
+        HashSet<String> hs = new HashSet<>();
+        for (String c : dictionary) {
+            hs.add(c);
+        }
+        return solve(s, hs, 0, s.length(), dp);
+    }
+}
