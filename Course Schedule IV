@@ -1,0 +1,52 @@
+class Solution {
+    public List<Boolean> checkIfPrerequisite(int numCourses, int[][] prerequisites, int[][] queries) {
+
+        boolean[][] graph = new boolean[numCourses][numCourses];
+
+        int[] hasPreq = new int[numCourses];
+        List<Integer>[] reqForMap = new List[numCourses];
+
+        for(int[] prequisite: prerequisites){
+            hasPreq[prequisite[1]]++;
+
+            if(reqForMap[prequisite[0]] == null){
+                reqForMap[prequisite[0]] = new ArrayList<>();
+            }
+            reqForMap[prequisite[0]].add(prequisite[1]);
+        }
+
+        Queue<Integer> queue = new LinkedList<>();
+        for(int i=0; i<numCourses; ++i){
+            if(hasPreq[i] == 0){
+                queue.add(i);
+            }
+        }
+
+        while(queue.size()>0){
+            int course = queue.poll();
+            if(reqForMap[course] != null){
+                for(Integer reqCourse: reqForMap[course]){
+                    graph[course][reqCourse] = true;
+                    
+                    for(int i=0; i<numCourses; ++i){
+                        if(graph[i][course]){
+                            graph[i][reqCourse] = true;
+                        }
+                    }
+
+                    hasPreq[reqCourse]--;
+                    if(hasPreq[reqCourse] == 0){
+                        queue.offer(reqCourse);
+                    }
+                }
+            }
+        }
+
+        List<Boolean> ans = new ArrayList<>();
+        for(int[] query: queries){
+            ans.add(graph[query[0]][query[1]]);
+        }
+
+        return ans;
+    }
+}
