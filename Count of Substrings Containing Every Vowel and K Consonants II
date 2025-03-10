@@ -1,38 +1,51 @@
-public class Solution {
-    private boolean isVowel(char ch) {
-        return ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u';
-    }
+class Solution {
+    public long countOfSubstrings(String word, int k) {
+        int[][] frequencies = new int[2][128];
+        frequencies[0]['a'] = 1;
+        frequencies[0]['e'] = 1;
+        frequencies[0]['i'] = 1;
+        frequencies[0]['o'] = 1;
+        frequencies[0]['u'] = 1;
 
-    private long atLeastK(String word, int k) {
-        int n = word.length();
-        long ans = 0;
-        int consonants = 0;
-        int left = 0;
-        HashMap<Character, Integer> vowelMap = new HashMap<>();
+        long response = 0;
 
-        for (int right = 0;  right < n; right++) {
-            char c = word.charAt(right);
+        int currentK = 0;
+        int vowels = 0;
+        int extraLeft = 0;
+        for (int right = 0, left = 0; right < word.length(); right++) {
+            char rightChar = word.charAt(right);
 
-            if (isVowel(c)) vowelMap.put(c, vowelMap.getOrDefault(c, 0) + 1);
-            else consonants++;
+            if (frequencies[0][rightChar] == 1 && ++frequencies[1][rightChar] == 1) {
+                vowels++;
+            } else if (frequencies[0][rightChar] == 0) {
+                currentK++;
+            }
 
-            while (vowelMap.size() == 5 && consonants >= k) {
-                ans += n - right;
+            while (currentK > k) {
                 char leftChar = word.charAt(left);
-                if (isVowel(leftChar)) {
-                    vowelMap.put(leftChar, vowelMap.get(leftChar) - 1);
 
-                    if (vowelMap.get(leftChar) == 0) vowelMap.remove(leftChar);
-                } else {
-                    consonants--;
+                if (frequencies[0][leftChar] == 1 && --frequencies[1][leftChar] == 0) {
+                    vowels--;
+                } else if (frequencies[0][leftChar] == 0) {
+                    currentK--;
                 }
                 left++;
+                extraLeft = 0;
+            }
+
+            //try to shrink
+            while (vowels == 5 && currentK == k && left < right && frequencies[0][word.charAt(left)] == 1 && frequencies[1][word.charAt(left)] > 1) {
+                extraLeft++;
+                frequencies[1][word.charAt(left)]--;
+                left++;
+            }
+
+            if (currentK == k && vowels == 5) {
+                response++;
+                response += extraLeft;
             }
         }
-        return ans;
-    }
 
-    public long countOfSubstrings(String word, int k) {
-        return atLeastK(word, k) - atLeastK(word, k - 1);
+        return response;
     }
 }
