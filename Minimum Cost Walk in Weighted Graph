@@ -1,0 +1,68 @@
+class Solution {
+    class UnionFind{
+        int[] parent;
+        int[] rank;
+        int[] value;
+
+        public UnionFind(int n){
+            parent = new int[n];
+            rank = new int[n];
+            value = new int[n];
+
+            for(int i=0;i<n;i++){
+                parent[i] = i;
+                value[i] = -1;
+            }
+        }
+
+        public int find(int x){
+            if(parent[x] !=x) parent[x] = find(parent[x]);
+            return parent[x];
+        }
+
+        public void union(int x, int y, int weight){
+            int px = find(x);
+            int py = find(y);
+            if(px == py){
+                value[px] = (value[px] == -1) ? weight : (value[px] & weight);
+                return;
+            }
+
+            if(rank[px]<rank[py]){
+                parent[px] = py;
+                value[py] = (value[py] == -1 ? weight : (value[px] & weight)) & (value[py] == -1 ? -1 : value[py]);
+            }
+            else if(rank[px] > rank[py]){
+                parent[py] = px;
+                value[px] = (value[px] == -1 ? weight : (value[px] & weight)) & (value[py] == -1 ? -1 : value[py]);
+            }
+            else {
+                parent[py] = px;
+                rank[px]++;
+                value[px] = (value[px] == -1 ? weight : (value[px] & weight)) & (value[py] == -1 ? -1 : value[py]);
+            }
+        }
+    }
+
+    public int[] minimumCost(int n, int[][] edges, int[][] query) {
+        UnionFind uf = new UnionFind(n);
+
+        for(int[] edge : edges){
+            int u = edge[0];
+            int v = edge[1];
+            int w = edge[2];
+            uf.union(u, v, w);
+        }
+
+        int[] answer = new int[query.length];
+        for(int i=0;i<query.length;i++){
+            int s = query[i][0];
+            int t = query[i][1];
+            int ps = uf.find(s);
+            int pt = uf.find(t);
+            if(ps!=pt) answer[i] = -1;
+            else answer[i] = uf.value[ps];
+        }
+        return answer;
+    }
+}
