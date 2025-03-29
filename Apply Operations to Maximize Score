@@ -1,0 +1,84 @@
+class Solution {
+    static final int MOD = 1_000_000_007;
+    static final int MAX = 100000; // max nums[i]
+
+    static int[] sievePrimeFactors;
+
+    static {
+        sievePrimeFactors = new int[MAX + 1];
+        sieveOfEratosthenes();//computes no of distinct prime factors from 0->MAX
+    }
+
+    public int maximumScore(List<Integer> nums, int k) {
+        int n = nums.size();
+        int[] primeScores = findDistinctPrimes(nums);
+
+        int[] left = new int[n], right = new int[n];
+        Arrays.fill(left, -1);
+        Arrays.fill(right, n);
+
+        Stack<Integer> st = new Stack<>();
+        for (int i = 0; i < n; i++) {
+            while (!st.isEmpty() && primeScores[st.peek()] < primeScores[i]) {
+                right[st.pop()] = i;
+            }
+            if (!st.isEmpty()) {
+                left[i] = st.peek();
+            }
+            st.push(i);
+        }
+
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> b[0] - a[0]);
+        for (int i = 0; i < n; i++) {
+            pq.offer(new int[]{nums.get(i), i});
+        }
+
+        long res = 1;
+        while (!pq.isEmpty() && k > 0) {
+            int[] arr = pq.poll();
+            int val = arr[0], ind = arr[1];
+
+            int l = left[ind], r = right[ind];
+            long combos = (long) (r - ind) * (ind - l); 
+
+            int use = (int) Math.min(k, combos);
+            res = (res * modPow(val, use, MOD)) % MOD;
+            k -= use;
+        }
+
+        return (int) res;
+    }
+
+    private static int[] findDistinctPrimes(List<Integer> nums) {
+        int n = nums.size();
+        int[] scores = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            int val = nums.get(i);
+            scores[i] = sievePrimeFactors[val];
+        }
+        return scores;
+    }
+
+    private static void sieveOfEratosthenes() 
+    {
+        for (int i = 2; i <= MAX; i++) {
+            if (sievePrimeFactors[i] == 0) { // i is prime
+                for (int j = i; j <= MAX; j += i) {
+                    sievePrimeFactors[j]++;
+                }
+            }
+        }
+    }
+
+    //compute Math.pow(val,use)
+    private static long modPow(long x, long y, long mod) {
+        long res = 1;
+        while (y > 0) {
+            if ((y & 1) == 1) res = (res * x) % mod;
+            x = (x * x) % mod;
+            y >>= 1;
+        }
+        return res;
+    }
+}
