@@ -1,0 +1,12 @@
+class Solution {
+    public int minimumOperations(int[] nums) {
+        int[] freq = new int[101]; // 📊 Frequency tracker
+        int i;
+        for (i = nums.length - 1; i >= 0; i--) {
+            if (freq[nums[i]] == 1) break; // ❌ Duplicate found
+            freq[nums[i]]++; // ✅ Mark as seen
+        }
+        i += 3; // ➕ Add 3
+        return i / 3; // 🔢 Return number of operations
+    }
+}
