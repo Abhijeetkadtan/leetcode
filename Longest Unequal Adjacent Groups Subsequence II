@@ -1,0 +1,52 @@
+class Solution {
+    public List<String> getWordsInLongestSubsequence(String[] words, int[] groups) {
+        int n = words.length;
+        List<List<Integer>> graph = new ArrayList<>();
+        for (int i = 0; i < n; i++) graph.add(new ArrayList<>());
+        for (int i = 0; i < n; i++) {
+            String w1 = words[i];
+            for (int j = i + 1; j < n; j++) {
+                String w2 = words[j];
+                if (groups[i] != groups[j] && w1.length() == w2.length() && hammingDist(w1, w2) == 1) {
+                    graph.get(i).add(j);
+                }
+            }
+        }
+        int[] dp = new int[n];
+        int[] parent = new int[n];
+        Arrays.fill(dp, 1);
+        Arrays.fill(parent, -1);
+
+        // Try all pairs in order
+        for (int i = n - 1; i >= 0; i--) {
+            for (int next : graph.get(i)) {
+                if (dp[next] + 1 > dp[i]) {
+                    dp[i] = dp[next] + 1;
+                    parent[i] = next;
+                }
+            }
+        }
+        int maxLen = 0;
+        int start = 0;
+        for (int i = 0; i < n; i++) {
+            if (dp[i] > maxLen) {
+                maxLen = dp[i];
+                start = i;
+            }
+        }
+        List<String> result = new ArrayList<>();
+        while (start != -1) {
+            result.add(words[start]);
+            start = parent[start];
+        }
+
+        return result;
+    }
+    private int hammingDist(String a, String b) {
+        int dist = 0;
+        for (int i = 0; i < a.length(); i++) {
+            if (a.charAt(i) != b.charAt(i)) dist++;
+        }
+        return dist;
+    }
+}
