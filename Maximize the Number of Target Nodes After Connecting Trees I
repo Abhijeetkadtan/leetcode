@@ -1,0 +1,61 @@
+import java.util.*;
+
+class Solution {
+    private int dfs(int node, int k, List<List<Integer>> adj, boolean[] vis, int par) {
+        vis[node] = true;
+        int cnt = 1;
+        if (k > 0) {
+            for (int neighbor : adj.get(node)) {
+                if (neighbor != par) {
+                    cnt += dfs(neighbor, k - 1, adj, vis, node);
+                }
+            }
+        }
+        return cnt;
+    }
+
+    public List<Integer> maxTargetNodes(List<List<Integer>> edges1, List<List<Integer>> edges2, int k) {
+        int n1 = edges1.size() + 1;
+        int n2 = edges2.size() + 1;
+
+        List<List<Integer>> adj1 = new ArrayList<>();
+        List<List<Integer>> adj2 = new ArrayList<>();
+
+        for (int i = 0; i < n1; i++) adj1.add(new ArrayList<>());
+        for (int i = 0; i < n2; i++) adj2.add(new ArrayList<>());
+
+        for (List<Integer> edge : edges1) {
+            int u = edge.get(0), v = edge.get(1);
+            adj1.get(u).add(v);
+            adj1.get(v).add(u);
+        }
+
+        for (List<Integer> edge : edges2) {
+            int u = edge.get(0), v = edge.get(1);
+            adj2.get(u).add(v);
+            adj2.get(v).add(u);
+        }
+
+        if (k == 0) {
+            List<Integer> result = new ArrayList<>();
+            for (int i = 0; i < n1; i++) result.add(1);
+            return result;
+        }
+
+        int maxi = 0;
+        for (int i = 0; i < n2; i++) {
+            boolean[] vis = new boolean[n2];
+            int cnt = dfs(i, k - 1, adj2, vis, -1);
+            maxi = Math.max(maxi, cnt);
+        }
+
+        List<Integer> ans = new ArrayList<>();
+        for (int i = 0; i < n1; i++) {
+            boolean[] vis = new boolean[n1];
+            int cnt = dfs(i, k, adj1, vis, -1);
+            ans.add(cnt + maxi);
+        }
+
+        return ans;
+    }
+}
