@@ -1,0 +1,26 @@
+class Solution {
+    public boolean isValid(String word) {
+        int vol=0;
+        int cot=0;
+    if(word.length()<3){
+        return false;
+    } 
+    for(int i=0;i<word.length();i++){
+    char c=word.charAt(i);
+     if((c>='A' && c<='Z') ||(c>='a' && c<='z') || (c>='0' && c<='9') ){
+if(c=='a' || c=='e'||c=='i' || c=='o'|| c=='u' ||c=='A' || c=='E'||c=='I' || c=='O'|| c=='U'){
+    vol++;
+}else if ((c>='A' && c<='Z') ||(c>='a' && c<='z')) {
+    cot++;
+}
+}else{
+    return false;
+}
+    }
+if(vol==0 || cot==0){
+    return false ;
+}
+
+return true;
+    }
+}
