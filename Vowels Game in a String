@@ -1,0 +1,22 @@
+class Solution {
+     public static boolean isVowel(char ch) {
+        ch = Character.toLowerCase(ch);
+        return ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u';
+    }
+    public boolean doesAliceWin(String s) {
+        char[] c= s.toCharArray();
+        int v=0;
+        boolean f=true;
+        for(int i=0;i<c.length;i++){
+            if(isVowel(c[i])){
+                v++;
+            }
+        }
+        if(v==0){
+            f=false;
+        }else if(v%2!=0){
+            f= true;
+        }
+return f;
+    }
+}
