@@ -1,0 +1,16 @@
+class Solution {
+    public int minCost(String colors, int[] need) {
+        int l=0,res=0;
+        for(int i=1;i<colors.length();i++){
+            if(colors.charAt(l)==colors.charAt(i)){
+                int min=Math.min(need[l],need[i]);
+                res+=min;
+               if (need[i] > need[l]) {
+                    l = i;
+                }
+            }else{
+                l=i;
+            }
+        }return res;
+    }
+}
